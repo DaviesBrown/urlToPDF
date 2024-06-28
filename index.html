@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Webpage to PDF</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Convert Webpage to PDF</h1>
+    <form id="convert-form">
+      <label for="url">Webpage URL:</label>
+      <input type="url" id="url" name="url" required>
+      <button type="submit">Convert</button>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById('convert-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const url = document.getElementById('url').value;
+
+      const response = await fetch('/convert', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ url })
+      });
+
+      if (response.ok) {
+        const blob = await response.blob();
+        const link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download = 'webpage.pdf';
+        link.click();
+      } else {
+        alert('Failed to convert webpage to PDF');
+      }
+    });
+  </script>
+</body>
+</html>
+
